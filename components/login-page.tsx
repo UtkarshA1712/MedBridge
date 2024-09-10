@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label"
 import Link from 'next/link'
 import { ChevronRight, Heart, Activity, User } from 'lucide-react'
 
+import { login } from "../firebaseAuth";
+
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
@@ -50,6 +52,18 @@ const useTypingEffect = (text: string, delay: number = 100) => {
 const LoginPage = ({onSwitch}: { onSwitch: () => void }) => {
   const [activeTab, setActiveTab] = useState("doctor")
   const welcomeText = useTypingEffect("Welcome to MediBase", 100)
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    try {
+      const userCredential = await login(email, password);
+      console.log("Logged in as: ", userCredential.user);
+    } catch (error) {
+      console.error("Error logging in: ", error);
+    }
+  };
 
   return (
     <motion.div 

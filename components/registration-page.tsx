@@ -9,6 +9,13 @@ import { Label } from "@/components/ui/label"
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 
+import { ref, set } from "firebase/database";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { db } from "../firebaseConfig";
+import { auth } from "../firebaseConfig";
+import { setLogLevel } from "firebase/app";
+setLogLevel('debug');
+
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
@@ -46,8 +53,31 @@ const useTypingEffect = (text: string, delay: number = 100) => {
   return `${displayedText}${showCursor ? '_' : ' '}`
 }
 
-const RegistrationPage = ({ onSwitch }: { onSwitch: () => void }) => {
+const RegistrationPage = ({ onSwitch }: { onSwitch: (page: string) => void }) => {
   const welcomeText = useTypingEffect("Join MediBase Today", 100)
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setUsername] = useState("");
+  const [patientId, setPatientId] = useState("");
+  const [error, setError] = useState("");
+
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      // const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // const user = userCredential.user;
+      await set(ref(db, 'users/' + patientId), {
+        name: name,
+        email: email,
+        patientId: patientId,
+      });
+      console.log("User registered and data saved successfully.");
+      setError("");
+    } catch (error: any) {
+      setError("Registration failed: " + error.message);
+    }
+  };
 
   return (
     <motion.div 
@@ -75,7 +105,7 @@ const RegistrationPage = ({ onSwitch }: { onSwitch: () => void }) => {
             </h1>
           </Link>
           <nav className="space-x-4">
-            <button onClick={onSwitch}>Login</button>
+            <button onClick={() => onSwitch("login")}>Login</button>
             <Link href="#about" className="text-gray-600 hover:text-blue-600 transition-colors">About</Link>
           </nav>
         </div>
@@ -103,11 +133,11 @@ const RegistrationPage = ({ onSwitch }: { onSwitch: () => void }) => {
               <form id="registration-form" className="space-y-4">
                 <div>
                   <Label htmlFor="name" className="text-gray-700">Patient Name</Label>
-                  <Input id="name" name="name" required className="bg-white border-gray-300" />
+                  <Input id="name" name="name" required className="bg-white border-gray-300" onChange={(e) => setUsername(e.target.value)} />
                 </div>
                 <div>
                   <Label htmlFor="email" className="text-gray-700">Email</Label>
-                  <Input id="email" name="email" type="email" required className="bg-white border-gray-300" />
+                  <Input id="email" name="email" type="email" required className="bg-white border-gray-300" onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div>
                   <Label htmlFor="password" className="text-gray-700">Password</Label>
@@ -115,19 +145,20 @@ const RegistrationPage = ({ onSwitch }: { onSwitch: () => void }) => {
                 </div>
                 <div>
                   <Label htmlFor="repeat-password" className="text-gray-700">Repeat Password</Label>
-                  <Input id="repeat-password" name="repeat-password" type="password" required className="bg-white border-gray-300" />
+                  <Input id="repeat-password" name="repeat-password" type="password" required className="bg-white border-gray-300" onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 <div>
                   <Label htmlFor="patient-id" className="text-gray-700">Patient ID (Given by Hospital)</Label>
-                  <Input id="patient-id" name="patient-id" required className="bg-white border-gray-300" />
+                  <Input id="patient-id" name="patient-id" required className="bg-white border-gray-300" onChange={(e) => setPatientId(e.target.value)} />
                 </div>
               </form>
             </CardContent>
             <CardFooter className="flex justify-between">
               <Button variant="link" className="text-blue-600 hover:text-blue-800">Already have an account?</Button>
-              <Button type="submit" form="registration-form" className="bg-blue-600 text-white hover:bg-blue-700">
+              <Button type="submit" form="registration-form" className="bg-blue-600 text-white hover:bg-blue-700" onClick={handleRegister}>
                 Register <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
+              {error && <p style={{ color: 'red' }}>{error}</p>}
             </CardFooter>
           </Card>
         </motion.div>
@@ -157,4 +188,5 @@ const RegistrationPage = ({ onSwitch }: { onSwitch: () => void }) => {
     </motion.div>
   );
 };
+
 export default RegistrationPage;
