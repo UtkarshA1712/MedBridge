@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useState, useEffect } from 'react'
 import { motion, useAnimation } from 'framer-motion'
 import { Button } from "@/components/ui/button"
@@ -9,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from "@/components/ui/label"
 import Link from 'next/link'
 import { ChevronRight, Heart, Activity, User } from 'lucide-react'
+
 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebaseConfig"; 
@@ -50,7 +50,7 @@ const useTypingEffect = (text: string, delay: number = 100) => {
   return `${displayedText}${showCursor ? '_' : ' '}`
 }
 
-const LoginPage = ({onSwitch}: { onSwitch: () => void }) => {
+const LoginPage = ({onSwitch, onRedirect }: { onSwitch: () => void, onRedirect: (path: string) => void  }) => {
   const [activeTab, setActiveTab] = useState("doctor")
   const welcomeText = useTypingEffect("Welcome to MediBase", 100)
 
@@ -59,7 +59,7 @@ const LoginPage = ({onSwitch}: { onSwitch: () => void }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>, userType: string) => {
+  const handleLogin  = async (e: React.FormEvent<HTMLFormElement>, userType: string) => {
     e.preventDefault();
     
     try {
@@ -70,15 +70,16 @@ const LoginPage = ({onSwitch}: { onSwitch: () => void }) => {
         const user = userCredential.user;
   
         console.log("Doctor logged in successfully:", user.email);
-        alert("Doctor login successful!");
+        
   
       } else if (userType === "patient") {
         const email = e.currentTarget.ploginemail.value;
         const password = e.currentTarget.ploginpwd.value;
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-          console.log("Patient logged in successfully:", user.email);      
-        }
+        console.log("Patient logged in successfully:", user.email);
+        onRedirect('/patient-dashboard');
+      }
     } catch (error: any) {
       console.error("Login error:", error.message);
       alert("Login failed: " + error.message); 
@@ -171,7 +172,7 @@ const LoginPage = ({onSwitch}: { onSwitch: () => void }) => {
                   </form>
                 </TabsContent>
                 <TabsContent value="patient">
-                  <form id="patient-login-form" className="space-y-4" onSubmit={(e) => handleLogin(e, 'patient')}>
+                  <form id={activeTab === "doctor" ? "doctor-login-form" : "patient-login-form"} onSubmit={(e) => handleLogin(e, activeTab)}>
                     <div>
                       <Label htmlFor="ploginname" className="text-gray-700">Patient Name</Label>
                       <Input id="ploginname" name="ploginname" required className="bg-white border-gray-300" />
