@@ -16,8 +16,14 @@ const fadeInUp = {
   transition: { duration: 0.6 }
 }
 
-const DoctorReportUpload = ({onSwitch}: {onSwitch: (page: string) => void}) => {
+const DoctorReportUpload = () => {
   const [file, setFile] = useState<File | null>(null)
+  const [patientId, setPatientId] = useState('')
+  const [patientName, setPatientName] = useState('')
+  const [symptoms, setSymptoms] = useState('')
+  const [reportAnalysis, setReportAnalysis] = useState('')
+  const [uploadType, setUploadType] = useState('')
+  const [uploadAnalysis, setUploadAnalysis] = useState('')
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -25,10 +31,37 @@ const DoctorReportUpload = ({onSwitch}: {onSwitch: (page: string) => void}) => {
     }
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handlePredict = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    // Handle form submission here
-    console.log('Form submitted')
+
+    const formData = new FormData()
+    formData.append('rep', symptoms)
+    formData.append('uploadType', uploadType)
+    formData.append('uploadAnalysis', uploadAnalysis)
+    if (file) {
+      formData.append('upfile', file)
+    }
+
+    try {
+      const response = await fetch('https://12d9-35-227-115-246.ngrok-free.app/report-submit', {
+        method: 'POST',
+        body: formData
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      console.log('Response from server:', data)
+
+      // Update state with response data
+      setReportAnalysis(`${data.nlp_prediction} (suspected)`)
+      setUploadAnalysis(`${data.top_cnn_prediction} (suspected)`)
+
+    } catch (error) {
+      console.error('Error:', error)
+    }
   }
 
   return (
@@ -43,28 +76,56 @@ const DoctorReportUpload = ({onSwitch}: {onSwitch: (page: string) => void}) => {
           <CardTitle className="text-2xl text-blue-800">Patient Report Upload</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handlePredict} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="patientId" className="text-gray-700">Patient ID</Label>
-                <Input id="patientId" name="patientId" required className="bg-white border-gray-300" />
+                <Label htmlFor="patientId" className="text-gray-700" >Patient ID</Label>
+                <Input
+                  id="patientId"
+                  name="patientId"
+                  value={patientId}
+                  onChange={(e) => setPatientId(e.target.value)}
+                  className="bg-white border-gray-300"
+                />
               </div>
               <div>
                 <Label htmlFor="patientName" className="text-gray-700">Patient Name</Label>
-                <Input id="patientName" name="patientName" required className="bg-white border-gray-300" />
+                <Input
+                  id="patientName"
+                  name="patientName"
+                  value={patientName}
+                  onChange={(e) => setPatientName(e.target.value)}
+                  className="bg-white border-gray-300"
+                />
               </div>
             </div>
             <div>
               <Label htmlFor="symptoms" className="text-gray-700">Symptoms</Label>
-              <Textarea id="symptoms" name="symptoms" required className="bg-white border-gray-300 min-h-[100px]" />
+              <Textarea
+                id="symptoms"
+                name="symptoms"
+                value={symptoms}
+                onChange={(e) => setSymptoms(e.target.value)}
+                className="bg-white border-gray-300 min-h-[100px]"
+              />
             </div>
             <div>
               <Label htmlFor="reportAnalysis" className="text-gray-700">Report Analysis</Label>
-              <Textarea id="reportAnalysis" name="reportAnalysis" required className="bg-white border-gray-300 min-h-[100px]" />
+              <Textarea
+                id="reportAnalysis"
+                name="reportAnalysis"
+                value={reportAnalysis}
+                onChange={(e) => setReportAnalysis(e.target.value)}
+                className="bg-white border-gray-300 min-h-[100px]"
+              />
             </div>
             <div>
               <Label htmlFor="uploadType" className="text-gray-700">Upload Type</Label>
-              <Select name="uploadType">
+              <Select
+                name="uploadType"
+                value={uploadType}
+                onValueChange={(value) => setUploadType(value)}
+              >
                 <SelectTrigger className="bg-white border-gray-300">
                   <SelectValue placeholder="Select upload type" />
                 </SelectTrigger>
@@ -89,18 +150,27 @@ const DoctorReportUpload = ({onSwitch}: {onSwitch: (page: string) => void}) => {
             </div>
             <div>
               <Label htmlFor="uploadAnalysis" className="text-gray-700">Upload Analysis</Label>
-              <Textarea id="uploadAnalysis" name="uploadAnalysis" className="bg-white border-gray-300 min-h-[100px]" />
+              <Textarea
+                id="uploadAnalysis"
+                name="uploadAnalysis"
+                value={uploadAnalysis}
+                onChange={(e) => setUploadAnalysis(e.target.value)}
+                className="bg-white border-gray-300 min-h-[100px]"
+              />
             </div>
+            <CardFooter>
+              <Button
+                type="submit"
+                className="bg-blue-600 text-white hover:bg-blue-700 w-full"
+              >
+                Submit Report <Upload className="ml-2 h-4 w-4" />
+              </Button>
+            </CardFooter>
           </form>
         </CardContent>
-        <CardFooter>
-          <Button type="submit" className="bg-blue-600 text-white hover:bg-blue-700 w-full">
-            Submit Report <Upload className="ml-2 h-4 w-4" />
-          </Button>
-        </CardFooter>
       </Card>
     </motion.div>
   )
-};
+}
 
-export default DoctorReportUpload;
+export default DoctorReportUpload

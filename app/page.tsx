@@ -3,23 +3,22 @@
 import { useState } from 'react';
 import LoginPage from '../components/login-page';
 import RegistrationPage from '../components/registration-page';
-import { useRouter } from 'next/navigation';
+import PatientDashboard from '../pages/patient-dashboard';
+import DoctorReportUpload from '../components/doctor-report-upload';
 
 const Page = () => {
   const [currentPage, setCurrentPage] = useState('login');
-  const router = useRouter();
 
   const handlePageSwitch = (page: string) => {
     setCurrentPage(page);
   };
 
-  const handleRedirect = (path: string) => {
-    setCurrentPage(path);
-  };
   return (
     <div>
-      {currentPage === 'login' && <LoginPage onSwitch={() => handlePageSwitch('register')} onRedirect={handleRedirect}/>}
+      {currentPage === 'login' && <LoginPage onSwitch={() => handlePageSwitch('register')} />}
       {currentPage === 'register' && <RegistrationPage onSwitch={() => handlePageSwitch('login')} />}
+      {currentPage === 'patient-dashboard' && <PatientDashboard />}
+      {currentPage === 'doctor-dashboard' && <DoctorReportUpload />}
     </div>
   );
 };

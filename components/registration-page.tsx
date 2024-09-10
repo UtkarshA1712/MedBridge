@@ -54,7 +54,7 @@ const useTypingEffect = (text: string, delay: number = 100) => {
 }
 
 const RegistrationPage = ({ onSwitch }: { onSwitch: (page: string) => void }) => {
-  const welcomeText = useTypingEffect("Join MediBase Today", 100)
+  const welcomeText = useTypingEffect("Join MedBridge Today", 100)
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -190,7 +190,7 @@ const RegistrationPage = ({ onSwitch }: { onSwitch: (page: string) => void }) =>
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <h3 className="text-2xl font-bold mb-2">MediBase</h3>
+              <h3 className="text-2xl font-bold mb-2">MedBridge</h3>
               <p className="text-blue-200">Revolutionizing healthcare management</p>
             </div>
             <nav className="flex space-x-4">
@@ -200,7 +200,7 @@ const RegistrationPage = ({ onSwitch }: { onSwitch: (page: string) => void }) =>
             </nav>
           </div>
           <div className="mt-8 text-center text-blue-200">
-            <p>&copy; {new Date().getFullYear()} MediBase. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} MedBridge. All rights reserved.</p>
           </div>
         </div>
       </motion.footer>

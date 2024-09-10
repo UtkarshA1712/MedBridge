@@ -14,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "MediBase",
-  description: "Medibase",
+  title: "MedBridge",
+  description: "medbridge",
 };
 
 export default function RootLayout({

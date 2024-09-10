@@ -103,7 +103,7 @@ const AppointmentCard: React.FC<{ appointment: Appointment; toggleExpand: (id: n
   )
 }
 
-const PatientDashboard = ({onSwitch}: {onSwitch: () => void}) => {
+const PatientDashboard = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([
     {
       id: 1,

@@ -50,9 +50,9 @@ const useTypingEffect = (text: string, delay: number = 100) => {
   return `${displayedText}${showCursor ? '_' : ' '}`
 }
 
-const LoginPage = ({onSwitch, onRedirect }: { onSwitch: () => void, onRedirect: (path: string) => void  }) => {
+const LoginPage = ({onSwitch }: { onSwitch: () => void }) => {
   const [activeTab, setActiveTab] = useState("doctor")
-  const welcomeText = useTypingEffect("Welcome to MediBase", 100)
+  const welcomeText = useTypingEffect("Welcome to MedBridge", 100)
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -78,7 +78,6 @@ const LoginPage = ({onSwitch, onRedirect }: { onSwitch: () => void, onRedirect: 
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         console.log("Patient logged in successfully:", user.email);
-        onRedirect('/patient-dashboard');
       }
     } catch (error: any) {
       console.error("Login error:", error.message);
@@ -109,8 +108,8 @@ const LoginPage = ({onSwitch, onRedirect }: { onSwitch: () => void, onRedirect: 
               MB
             </motion.div>
             <h1 className="text-2xl font-bold">
-              <span className="text-blue-600">Medi</span>
-              <span className="text-gray-800">Base</span>
+              <span className="text-blue-600">Med</span>
+              <span className="text-gray-800">Bridge</span>
             </h1>
           </Link>
           <nav className="space-x-4">
@@ -147,7 +146,7 @@ const LoginPage = ({onSwitch, onRedirect }: { onSwitch: () => void, onRedirect: 
           <Card className="w-full max-w-md mx-auto bg-white bg-opacity-70 backdrop-blur-md shadow-lg">
             <CardHeader>
               <CardTitle className="text-2xl text-blue-800">Login</CardTitle>
-              <CardDescription className="text-gray-600">Access your MediBase account</CardDescription>
+              <CardDescription className="text-gray-600">Access your MedBridge account</CardDescription>
             </CardHeader>
             <CardContent>
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -207,7 +206,7 @@ const LoginPage = ({onSwitch, onRedirect }: { onSwitch: () => void, onRedirect: 
         variants={fadeInUp}
       >
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-blue-800">Why Choose MediBase?</h2>
+          <h2 className="text-3xl font-bold text-center mb-12 text-blue-800">Why Choose MedBridge?</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { icon: Heart, title: "Patient-Centric Care", description: "Prioritizing patient needs with easy access to medical records and personalized care plans." },
@@ -235,7 +234,7 @@ const LoginPage = ({onSwitch, onRedirect }: { onSwitch: () => void, onRedirect: 
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <h3 className="text-2xl font-bold mb-2">MediBase</h3>
+              <h3 className="text-2xl font-bold mb-2">MedBridge</h3>
               <p className="text-blue-200">Revolutionizing healthcare management</p>
             </div>
             <nav className="flex space-x-4">
@@ -245,7 +244,7 @@ const LoginPage = ({onSwitch, onRedirect }: { onSwitch: () => void, onRedirect: 
             </nav>
           </div>
           <div className="mt-8 text-center text-blue-200">
-            <p>&copy; {new Date().getFullYear()} MediBase. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} MedBridge. All rights reserved.</p>
           </div>
         </div>
       </motion.footer>
