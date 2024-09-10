@@ -10,7 +10,8 @@ import { Label } from "@/components/ui/label"
 import Link from 'next/link'
 import { ChevronRight, Heart, Activity, User } from 'lucide-react'
 
-import { login } from "../firebaseAuth";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../firebaseConfig"; 
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -55,15 +56,36 @@ const LoginPage = ({onSwitch}: { onSwitch: () => void }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>, userType: string) => {
+    e.preventDefault();
+    
     try {
-      const userCredential = await login(email, password);
-      console.log("Logged in as: ", userCredential.user);
-    } catch (error) {
-      console.error("Error logging in: ", error);
+      if (userType === "doctor") {
+        const doctorEmail = e.currentTarget.did.value;
+        const password = e.currentTarget.dpwd.value;
+        const userCredential = await signInWithEmailAndPassword(auth, doctorEmail, password);
+        const user = userCredential.user;
+  
+        console.log("Doctor logged in successfully:", user.email);
+        alert("Doctor login successful!");
+  
+      } else if (userType === "patient") {
+        const email = e.currentTarget.ploginemail.value;
+        const password = e.currentTarget.ploginpwd.value;
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+          console.log("Patient logged in successfully:", user.email);      
+        }
+    } catch (error: any) {
+      console.error("Login error:", error.message);
+      alert("Login failed: " + error.message); 
     }
   };
+  
+
 
   return (
     <motion.div 
@@ -133,7 +155,7 @@ const LoginPage = ({onSwitch}: { onSwitch: () => void }) => {
                   <TabsTrigger value="patient" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">Patient</TabsTrigger>
                 </TabsList>
                 <TabsContent value="doctor">
-                  <form id="doctor-login-form" className="space-y-4">
+                  <form id="doctor-login-form" className="space-y-4" onSubmit={(e) => handleLogin(e, 'doctor')}>
                     <div>
                       <Label htmlFor="dname" className="text-gray-700">Full Name</Label>
                       <Input id="dname" name="dname" required className="bg-white border-gray-300" />
@@ -149,7 +171,7 @@ const LoginPage = ({onSwitch}: { onSwitch: () => void }) => {
                   </form>
                 </TabsContent>
                 <TabsContent value="patient">
-                  <form id="patient-login-form" className="space-y-4">
+                  <form id="patient-login-form" className="space-y-4" onSubmit={(e) => handleLogin(e, 'patient')}>
                     <div>
                       <Label htmlFor="ploginname" className="text-gray-700">Patient Name</Label>
                       <Input id="ploginname" name="ploginname" required className="bg-white border-gray-300" />
@@ -159,18 +181,20 @@ const LoginPage = ({onSwitch}: { onSwitch: () => void }) => {
                       <Input id="ploginid" name="ploginid" required className="bg-white border-gray-300" />
                     </div>
                     <div>
+                      <Label htmlFor="ploginemail" className="text-gray-700">Patient Email</Label>
+                      <Input id="ploginemail" name="ploginemail" required className="bg-white border-gray-300" onChange={(e) => setEmail(e.target.value)}/>
+                    </div>
+                    <div>
                       <Label htmlFor="ploginpwd" className="text-gray-700">Password</Label>
-                      <Input id="ploginpwd" name="ploginpwd" type="password" required className="bg-white border-gray-300" />
+                      <Input id="ploginpwd" name="ploginpwd" type="password" required className="bg-white border-gray-300" onChange={(e) => setPassword(e.target.value)}/>
                     </div>
                   </form>
                 </TabsContent>
               </Tabs>
             </CardContent>
             <CardFooter className="flex justify-between">
-              <Button variant="link" className="text-blue-600 hover:text-blue-800">Forgot password?</Button>
-              <Button type="submit" form={activeTab === "doctor" ? "doctor-login-form" : "patient-login-form"} className="bg-blue-600 text-white hover:bg-blue-700">
-                Log in <ChevronRight className="ml-2 h-4 w-4" />
-              </Button>
+            <Button variant="link" className="text-blue-600 hover:text-blue-800">Forgot password?</Button>
+            <Button type="submit" form={activeTab === "doctor" ? "doctor-login-form" : "patient-login-form"} className="bg-blue-600 text-white hover:bg-blue-700">Log in <ChevronRight className="ml-2 h-4 w-4" /></Button>
             </CardFooter>
           </Card>
         </motion.div>
