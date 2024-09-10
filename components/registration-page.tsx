@@ -75,8 +75,27 @@ const RegistrationPage = ({ onSwitch }: { onSwitch: (page: string) => void }) =>
       console.log("User registered and data saved successfully.");
       setError("");
     } catch (error: any) {
-      setError("Registration failed: " + error.message);
-    }
+      let errorMessage = "";
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          errorMessage = "This email is already in use. Please use a different email.";
+          break;
+        case 'auth/invalid-email':
+          errorMessage = "Invalid email format. Please enter a valid email address.";
+          break;
+        case 'auth/weak-password':
+          errorMessage = "Password is too weak. It should be at least 6 characters long.";
+          break;
+        case 'auth/operation-not-allowed':
+          errorMessage = "Email/password accounts are not enabled. Please contact support.";
+          break;
+        default:
+          errorMessage = "Registration failed: " + error.message;
+      }
+
+      setError(errorMessage);
+      window.alert(errorMessage);
+      }
   };
 
   return (
