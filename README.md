@@ -1,6 +1,6 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 ## MedBridge
-MediBase integrates a report analysis NLP model as well as an image-based disease detection model for a seamless diagnosis experience for both doctors as well as patients. If you are a patient, register and login to your MediBase account. Doctors can upload patient details, symptoms, as well as scans and x-rays. Patients can access their repoorts and their analysis on their dashboard.
+MedBridge integrates a report analysis NLP model as well as an image-based disease detection model for a seamless diagnosis experience for both doctors as well as patients. If you are a patient, register and login to your MedBridge account. Doctors can upload patient details, symptoms, as well as scans and x-rays. Patients can access their repoorts and their analysis on their dashboard.
 ## Getting Started
 
 First, run the development server:
