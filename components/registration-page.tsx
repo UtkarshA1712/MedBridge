@@ -19,7 +19,6 @@ setLogLevel('debug');
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6 }
 }
 
 const stagger = {
@@ -174,7 +173,7 @@ const RegistrationPage = ({ onSwitch }: { onSwitch: (page: string) => void }) =>
             </CardContent>
             <CardFooter className="flex justify-between">
               <Button variant="link" className="text-blue-600 hover:text-blue-800">Already have an account?</Button>
-              <Button type="submit" form="registration-form" className="bg-blue-600 text-white hover:bg-blue-700" onClick={handleRegister}>
+              <Button type="submit" form="registration-form" className="bg-blue-600 text-white hover:bg-blue-700">
                 Register <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
               {error && <p style={{ color: 'red' }}>{error}</p>}
